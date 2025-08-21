@@ -26,10 +26,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = config("SECRET_KEY")
+SECRET_KEY = 'django-insecure-p#$6(n-v%8_pczb0paxa1$utmzkno8@mwr#jo1x(m(opmvrueq'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config("DEBUG", default=False, cast=bool)
+DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -38,8 +38,8 @@ AUTHENTICATION_BACKENDS = ['account.backend.UsernameOrEmail']
 
 # Application definition
 
-ALLOWED_HOSTS = []
-CSRF_TRUSTED_ORIGINS = []
+ALLOWED_HOSTS = ['cleavercode-production.up.railway.app','https://cleavercode-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['cleavercode-production.up.railway.app','https://cleavercode-production.up.railway.app']
 
 
 INSTALLED_APPS = [
