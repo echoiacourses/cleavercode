@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from pathlib import Path
 from decouple import config
+import dj_database_url
 # from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -36,8 +37,8 @@ AUTHENTICATION_BACKENDS = ['account.backend.UsernameOrEmail']
 
 # Application definition
 
-ALLOWED_HOSTS = []
-CSRF_TRUSTED_ORIGINS = []
+ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = ["https://*.onrender.com"]
 
 
 INSTALLED_APPS = [
@@ -97,18 +98,32 @@ WSGI_APPLICATION = 'cleavercode.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        # 'ENGINE': 'django.db.backends.postgresql',
-        # 'NAME':'railway',
-        # 'USER':'postgres',
-        # 'PASSWORD':config("DB_PASSWORD"),
-        # 'HOST':'mainline.proxy.rlwy.net',
-        # 'PORT':'48602',
+
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if DATABASE_URL:
+    DATABASES = {
+        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#         # 'ENGINE': 'django.db.backends.postgresql',
+#         # 'NAME':'railway',
+#         # 'USER':'postgres',
+#         # 'PASSWORD':config("DB_PASSWORD"),
+#         # 'HOST':'mainline.proxy.rlwy.net',
+#         # 'PORT':'48602',
+#     }
+# }
 
 
 # Password validation
