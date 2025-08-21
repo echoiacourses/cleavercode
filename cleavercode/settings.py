@@ -39,7 +39,7 @@ AUTHENTICATION_BACKENDS = ['account.backend.UsernameOrEmail']
 # Application definition
 
 ALLOWED_HOSTS = ['cleavercode-production.up.railway.app','https://cleavercode-production.up.railway.app']
-CSRF_TRUSTED_ORIGINS = ['cleavercode-production.up.railway.app','https://cleavercode-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://cleavercode-production.up.railway.app']
 
 
 INSTALLED_APPS = [
