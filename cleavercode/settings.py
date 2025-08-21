@@ -38,8 +38,8 @@ AUTHENTICATION_BACKENDS = ['account.backend.UsernameOrEmail']
 
 # Application definition
 
-ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ["https://*.onrender.com"]
+ALLOWED_HOSTS = []
+CSRF_TRUSTED_ORIGINS = []
 
 
 INSTALLED_APPS = [
@@ -100,31 +100,20 @@ WSGI_APPLICATION = 'cleavercode.wsgi.application'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
-if DATABASE_URL:
-    DATABASES = {
-        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600, ssl_require=True)
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#         # 'ENGINE': 'django.db.backends.postgresql',
-#         # 'NAME':'railway',
-#         # 'USER':'postgres',
-#         # 'PASSWORD':config("DB_PASSWORD"),
-#         # 'HOST':'mainline.proxy.rlwy.net',
-#         # 'PORT':'48602',
-#     }
-# }
+
+DATABASES = {
+    'default': {
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME':'railway',
+        'USER':'postgres',
+        'PASSWORD':config("DB_PASSWORD"),
+        'HOST':'mainline.proxy.rlwy.net',
+        'PORT':'48602',
+    }
+}
 
 
 # Password validation
