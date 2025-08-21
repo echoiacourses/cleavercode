@@ -99,14 +99,14 @@ WSGI_APPLICATION = 'cleavercode.wsgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': BASE_DIR / 'db.sqlite3',
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME':'railway',
-        'USER':'postgres',
-        'PASSWORD':config("DB_PASSWORD"),
-        'HOST':'mainline.proxy.rlwy.net',
-        'PORT':'48602',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.postgresql',
+        # 'NAME':'railway',
+        # 'USER':'postgres',
+        # 'PASSWORD':config("DB_PASSWORD"),
+        # 'HOST':'mainline.proxy.rlwy.net',
+        # 'PORT':'48602',
     }
 }
 
