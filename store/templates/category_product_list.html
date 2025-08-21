@@ -1,0 +1,340 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load category math_filters %}
+
+
+{% block title %}
+Store - CleaverCode
+{% endblock %}
+{% block body %}
+
+        <main class="main">
+            <div class="intro-slider-container mb-5">
+                <div class="intro-slider owl-carousel owl-theme owl-nav-inside owl-light" data-toggle="owl" 
+                    data-owl-options='{
+                        "dots": true,
+                        "nav": false, 
+                        "responsive": {
+                            "1200": {
+                                "nav": true,
+                                "dots": false
+                            }
+                        }
+                    }'>
+                    {% for banner in banners %}
+                    <div class="intro-slide" style="background-image: url('{{ banner.image.url }}');">
+                        <div class="container intro-content">
+                            <div class="row justify-content-end">
+                                <div class="col-auto col-sm-7 col-md-6 col-lg-5">
+                                    <h3 class="intro-subtitle text-third">New Arrival</h3><!-- End .h3 intro-subtitle -->
+                                    <h1 class="intro-title">{{ banner.product.name }}</h1>
+
+                                    <div class="intro-price">
+                                        <sup class="intro-old-price">${{ banner.product.old_price }}</sup>
+                                        <span class="text-third">
+                                            <!-- $279<sup>.99</sup> -->
+                                             {{ banner.product.price }}
+                                        </span>
+                                    </div><!-- End .intro-price -->
+
+                                    <a href="category.html" class="btn btn-primary btn-round">
+                                        <span>Shop More</span>
+                                        <i class="icon-long-arrow-right"></i>
+                                    </a>
+                                </div><!-- End .col-lg-11 offset-lg-1 -->
+                            </div><!-- End .row -->
+                        </div><!-- End .intro-content -->
+                    </div><!-- End .intro-slide -->
+                    {% endfor %}
+                    
+                </div><!-- End .intro-slider owl-carousel owl-simple -->
+
+                <span class="slider-loader"></span><!-- End .slider-loader -->
+            </div><!-- End .intro-slider-container -->
+
+            <div class="container">
+                <h2 class="title text-center mb-4">Explore Popular Categories</h2><!-- End .title text-center -->
+                
+                <div class="cat-blocks-container">
+                    <div class="row" style="display: flex; justify-content: center;">
+                        <div class="col-6 col-sm-4 col-lg-2">
+                            <a href="{% url 'index' %}" class="cat-block" style="text-align:center;">
+                                <figure>
+                                    <span>
+                                        <img src="{% static 'assets/images/category/all_categories.png' %}" 
+                                            alt="All Categories"
+                                            style="width:75px; height:75px; object-fit:contain; margin:auto;" />
+                                    </span>
+                                </figure>
+                                <h3 class="cat-block-title" style="font-size:14px; margin-top:8px;">All Categories</h3>
+                            </a>
+                        </div>                              
+                        {% for category in product_categories %}
+                        <div class="col-6 col-sm-4 col-lg-2">
+                            <a href="{% url 'category-detail' category.id  %}" class="cat-block">
+                                <figure>
+                                    <span>
+                                        <img src="{{ category.image.url }}" alt="Category image">
+                                    </span>
+                                </figure>
+
+                                <h3 class="cat-block-title">{{ category }}</h3><!-- End .cat-block-title -->
+                            </a>
+                        </div><!-- End .col-sm-4 col-lg-2 -->
+                        {% endfor %}
+
+                    </div><!-- End .row -->
+                </div><!-- End .cat-blocks-container -->
+            </div><!-- End .container -->
+
+            <div class="mb-4"></div><!-- End .mb-4 -->
+
+            <div class="container">
+                <div class="row justify-content-center">
+{% for offer_product in offer_products %}
+                <div class="col-md-6 col-lg-4" style="margin-bottom:18px;">
+                <a href="{{ offer_product.product.get_product_url }}" style="text-decoration:none;">
+                    <div
+                    style="
+                        position:relative; border-radius:14px; overflow:hidden;
+                        padding:28px 26px; min-height:230px;
+                        background: {% cycle '#f7ece8' '#eef3ff' '#f7efd7' %};
+                    "
+                    >
+                    <!-- overlay fade -->
+                    <div style="
+                        position:absolute; inset:0;
+                        background:rgba(0,0,0,0.35);  /* adjust darkness here */
+                        z-index:1;
+                    "></div>
+
+                    <!-- text -->
+                    <div style="position:relative; z-index:2; max-width:60%;">
+                        <div style="margin:0 0 8px; font-size:16px; color:#eee; font-weight:500;">
+                        Smart Offer
+                        </div>
+                        <div style="margin:0 0 12px; font-size:22px; line-height:1.3; font-weight:800; color:#fff;">
+                        Save ${{ offer_product.product.old_price|sub:offer_product.product.price }}
+                        <span style="font-weight:800;">on {{ offer_product.product.name }}</span>
+                        </div>
+                        <span style="color:#4da6ff; font-weight:700; font-size:16px;">
+                        Shop Now →
+                        </span>
+                    </div>
+
+                    <!-- faded image as background -->
+                    <img
+                        src="{{ offer_product.product.image.url }}"
+                        alt="{{ offer_product.product.name }}"
+                        style="
+                        position:absolute; right:0; bottom:0; top:0; width:100%; height:100%;
+                        object-fit:cover; z-index:0;
+                        "
+                    >
+                    </div>
+                </a>
+                </div>
+                {% endfor %}                    
+
+                </div><!-- End .row -->
+            </div><!-- End .container -->
+
+            <div class="mb-3"></div><!-- End .mb-5 -->
+
+            
+
+            <div class="mb-6"></div><!-- End .mb-6 -->
+
+
+            <div class="container for-you">
+                <div class="heading heading-flex mb-3">
+                    <div class="heading-left">
+                        <h2 class="title">{{ category.name }}</h2><!-- End .title -->
+                    </div><!-- End .heading-left -->
+
+                </div><!-- End .heading -->
+
+                <div class="products">
+                    <div class="row justify-content-center">
+                        {% for product in products %}
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <div class="product product-2">
+                                <figure class="product-media">
+                                    <span class="product-label label-circle label-sale">Sale</span>
+                                    <a href="{{ product.get_product_url }}">
+                                        <img src="{{ product.image.url }}" alt="Product image" class="product-image">
+                                    </a>
+
+                                    <div class="product-action-vertical">
+                                        <a href="#" class="btn-product-icon btn-wishlist" title="Add to wishlist"></a>
+                                    </div><!-- End .product-action -->
+
+                                    <div class="product-action" style="display: none;">
+                                        <a href="#" class="btn-product btn-cart" title="Add to cart"><span>add to cart</span></a>
+                                        <a href="popup/quickView.html" class="btn-product btn-quickview" title="Quick view"><span>quick view</span></a>
+                                    </div><!-- End .product-action -->
+                                </figure><!-- End .product-media -->
+
+                                <div class="product-body">
+                                    <div class="product-cat">
+                                        <a href="{{ product.get_product_url }}">{{ product.name }}</a>
+                                    </div><!-- End .product-cat -->
+                                    <h3 class="product-title"><a href="product.html">{{ product.preview_desc }}</a></h3><!-- End .product-title -->
+                                    <div class="product-price">
+                                        <span class="new-price">${{ product.price }}</span>
+                                        <span class="old-price">Was ${{ product.old_price }}</span>
+                                    </div><!-- End .product-price -->
+                                    <div class="ratings-container">
+                                        <div class="ratings">
+                                            <div class="ratings-val" style="width: 40%;"></div><!-- End .ratings-val -->
+                                        </div><!-- End .ratings -->
+                                        <span class="ratings-text">( 4 Reviews )</span>
+                                    </div><!-- End .rating-container -->
+
+                                    <div class="product-nav product-nav-dots">
+                                        <a href="#" class="active" style="background: #666666;"><span class="sr-only">Color name</span></a>
+                                        <a href="#" style="background: #ff887f;"><span class="sr-only">Color name</span></a>
+                                        <a href="#" style="background: #6699cc;"><span class="sr-only">Color name</span></a>
+                                        <a href="#" style="background: #f3dbc1;"><span class="sr-only">Color name</span></a>
+                                        <a href="#" style="background: #eaeaec;"><span class="sr-only">Color name</span></a>
+                                    </div><!-- End .product-nav -->
+                                </div><!-- End .product-body -->
+                            </div><!-- End .product -->
+                        </div><!-- End .col-sm-6 col-md-4 col-lg-3 -->
+                        {% empty %}
+                        <p>No products in this category yet.</p>
+                        {% endfor %}
+                    </div><!-- End .row -->
+
+                    {% if is_paginated %}
+                    <nav aria-label="Page navigation" class="my-4">
+                    <ul class="pagination justify-content-center">
+
+                        {# First / Prev #}
+                        {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1" aria-label="First">
+                            <span aria-hidden="true">&laquo;&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">&laquo;&laquo;</span>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link">&laquo;</span>
+                        </li>
+                        {% endif %}
+
+                        {# Page numbers #}
+                        {% for num in paginator.page_range %}
+                        {% if num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
+                            {% if num == page_obj.number %}
+                            <li class="page-item active" aria-current="page">
+                                <span class="page-link">{{ num }}</span>
+                            </li>
+                            {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                            </li>
+                            {% endif %}
+                        {% endif %}
+                        {% endfor %}
+
+                        {# Next / Last #}
+                        {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ paginator.num_pages }}" aria-label="Last">
+                            <span aria-hidden="true">&raquo;&raquo;</span>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">&raquo;</span>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link">&raquo;&raquo;</span>
+                        </li>
+                        {% endif %}
+
+                    </ul>
+                    </nav>
+                    {% endif %}
+                </div><!-- End .products -->
+            </div><!-- End .container -->
+
+            <div class="mb-4"></div><!-- End .mb-4 -->
+
+            <div class="container">
+                <hr class="mb-0">
+            </div><!-- End .container -->
+
+            <div class="icon-boxes-container bg-transparent">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="icon-box icon-box-side">
+                                <span class="icon-box-icon text-dark">
+                                    <i class="icon-rocket"></i>
+                                </span>
+                                <div class="icon-box-content">
+                                    <h3 class="icon-box-title">Free Shipping</h3><!-- End .icon-box-title -->
+                                    <p>Orders $50 or more</p>
+                                </div><!-- End .icon-box-content -->
+                            </div><!-- End .icon-box -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="icon-box icon-box-side">
+                                <span class="icon-box-icon text-dark">
+                                    <i class="icon-rotate-left"></i>
+                                </span>
+
+                                <div class="icon-box-content">
+                                    <h3 class="icon-box-title">Free Returns</h3><!-- End .icon-box-title -->
+                                    <p>Within 30 days</p>
+                                </div><!-- End .icon-box-content -->
+                            </div><!-- End .icon-box -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="icon-box icon-box-side">
+                                <span class="icon-box-icon text-dark">
+                                    <i class="icon-info-circle"></i>
+                                </span>
+
+                                <div class="icon-box-content">
+                                    <h3 class="icon-box-title">Get 20% Off 1 Item</h3><!-- End .icon-box-title -->
+                                    <p>when you sign up</p>
+                                </div><!-- End .icon-box-content -->
+                            </div><!-- End .icon-box -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+
+                        <div class="col-sm-6 col-lg-3">
+                            <div class="icon-box icon-box-side">
+                                <span class="icon-box-icon text-dark">
+                                    <i class="icon-life-ring"></i>
+                                </span>
+
+                                <div class="icon-box-content">
+                                    <h3 class="icon-box-title">We Support</h3><!-- End .icon-box-title -->
+                                    <p>24/7 amazing services</p>
+                                </div><!-- End .icon-box-content -->
+                            </div><!-- End .icon-box -->
+                        </div><!-- End .col-sm-6 col-lg-3 -->
+                    </div><!-- End .row -->
+                </div><!-- End .container -->
+            </div><!-- End .icon-boxes-container -->
+        </main><!-- End .main -->
+
+{% endblock %}

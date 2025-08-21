@@ -1,0 +1,147 @@
+{% extends 'dashboard_base.html' %}
+
+{% block body %}
+
+<!--  BEGIN MAIN CONTAINER  -->
+<div class="main-container sidebar-closed sbar-open" id="container">
+    
+    <div class="overlay"></div>
+    <div class="search-overlay"></div>
+    
+{% include 'dashboard_sidebar.html' %}
+  <div id="content" class="main-content">
+    <div class="layout-px-spacing">
+
+
+    <div class="row mb-3 align-items-center">
+    <div class="col">
+        <br>
+        <h4>Order #{{ order.order_id|default:order.id }}</h4>
+        <small>
+        Placed: {{ order.created|date:"d M Y, H:i" }} •
+        Payment: {{ order.payment_method }}
+        {% if order.payment_id %}( {{ order.payment_id }} ){% endif %}
+        </small>
+    </div>
+
+  <div class="col-auto text-right">
+    {# payment badge #}
+    <span class="badge {% if order.payment_id %}badge-success{% else %}badge-danger{% endif %}">
+      {% if order.payment_id %}Paid{% else %}Pending{% endif %}
+    </span>
+
+    {# shipped badge or action #}
+    {% if order.shipped %}
+      <span class="badge badge-primary">
+        Shipped{% if order.shipped_at %} — {{ order.shipped_at|date:"d M Y, H:i" }}{% endif %}
+      </span>
+    {% elif request.user.is_staff or request.user.user_type == 'developer' %}
+      <form action="{% url 'order_ship' order.pk %}" method="post" class="d-inline">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary badge">
+          Mark as shipped
+        </button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+
+
+
+      <div class="row">
+        <!-- Customer / Profile -->
+        <div class="col-lg-4 mb-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Customer</h5>
+              <p class="mb-1"><strong>Name:</strong>
+                {{ profile.full_name|default:order.user.user_name }}
+              </p>
+              <p class="mb-1"><strong>Email:</strong> {{ order.user.email }}</p>
+              <p class="mb-1"><strong>Phone:</strong> {{ profile.phone|default:"—" }}</p>
+              <p class="mb-0"><strong>Joined:</strong> {{ profile.date_joined|date:"d M Y" }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Billing address -->
+        <div class="col-lg-4 mb-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Billing Address</h5>
+              {% if billing %}
+                <address class="mb-0">
+                  {{ billing.first_name }} {{ billing.last_name }}<br>
+                  {{ billing.address1 }}{% if billing.address2 %}, {{ billing.address2 }}{% endif %}<br>
+                  {{ billing.city }} {{ billing.zipcode }}<br>
+                  {{ billing.country }}<br>
+                  {{ billing.phone_number }}
+                </address>
+              {% else %}
+                <p class="mb-0 text-muted">No billing address on file.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Totals -->
+        <div class="col-lg-4 mb-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Summary</h5>
+              <p class="mb-1"><strong>Items:</strong> {{ items|length }}</p>
+              <p class="mb-0"><strong>Total:</strong> ${{ order.get_totals|floatformat:2 }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Line items -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Items</h5>
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th class="text-center">Qty</th>
+                      <th>Size</th>
+                      <th>Color</th>
+                      <th class="text-right">Unit</th>
+                      <th class="text-right">Line Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for row in items %}
+                    <tr>
+                      <td>{{ row.item.name }}</td>
+                      <td class="text-center">{{ row.quantity }}</td>
+                      <td>{{ row.size|default:"—" }}</td>
+                      <td>{{ row.color|default:"—" }}</td>
+                      <td class="text-right">${{ row.variation_single_price }}</td>
+                      <td class="text-right">${{ row.variation_total }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="text-center text-muted">No items.</td></tr>
+                    {% endfor %}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th colspan="5" class="text-right">Total</th>
+                      <th class="text-right">${{ order.get_totals|floatformat:2 }}</th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
